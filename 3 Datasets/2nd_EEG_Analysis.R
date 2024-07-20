@@ -32,6 +32,7 @@ summary(ANOVA)
 
 regression <- lme(Value ~ cond * trial_type, random = ~ 1 | Subject, data = EEG_v2)
 summary(regression)
+confint(regression)
 
 
 #############Interaction Plot
