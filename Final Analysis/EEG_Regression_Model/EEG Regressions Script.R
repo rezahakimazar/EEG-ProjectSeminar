@@ -40,19 +40,8 @@ summary(ANOVA)
 # Run Regression
 regression <- lme(Value ~ cond * trial_type, random = ~ 1 | Subject, data = combined_EEG)
 summary(regression)
+intervals(regression)
 
-# Extract participant-level estimates
-combined_EEG$fitted_values <- fitted(regression)
-combined_EEG$residuals <- residuals(regression)
-
-# Create spaghetti plot
-ggplot(combined_EEG, aes(x = trial_type, y = Value, group = Subject)) +
-  geom_line(aes(y = fitted_values), color = "blue", alpha = 0.3) +
-  geom_point(color = "red", alpha = 0.6) +
-  labs(title = "Spaghetti Plot of Fitted Values by Subject",
-       x = "Trial Type",
-       y = "Value") +
-  theme_minimal()
 
 #############Interaction Plot
 ggplot(combined_EEG, aes(x = cond, y = Value, color = as.factor(trial_type), group = trial_type)) +
