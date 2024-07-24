@@ -10,11 +10,11 @@ cd 'Z:\EPSY\EPSY-Allgemein\Forschung\Pauls Materialien\project course\eeg data'
 subjects = [1, 2, 3, 4, 5, 6];
 
 % Preallocate the GrandAverageEEG array for three versions
-GrandAverageEEG = nan(length(subjects), 4, 61, 750); %Grandaverage 4D: subjects, conditions, channels, time 
+GrandAverageEEG = nan(length(subjects), 4, 61, 750); %Grandaverage 5D: versions, subjects, conditions, channels, time 
 
 epochtrans2 = {'oddball_common', 'oddball_rare', 'reversal_common', 'reversal_rare'};
 
-for version = 1:3
+for version = 2:3
     version = string(version);
     disp(version)
 
@@ -90,7 +90,7 @@ for version = 1:3
         disp(['Filtered dataset contains ' num2str(sum(strcmpi(EpochNames, 'oddball_rare')) / length(EEG.epoch) * 100) ' % stimuli of type oddball_rare']);
         disp(['Filtered dataset contains ' num2str(sum(strcmpi(EpochNames, 'reversal_common')) / length(EEG.epoch) * 100) ' % stimuli of type reversal_common']);
         disp(['Filtered dataset contains ' num2str(sum(strcmpi(EpochNames, 'reversal_rare')) / length(EEG.epoch) * 100) ' % stimuli of type reversal_rare']);
-       
+
         for nc = 1:length(epochtrans2)
             n_trials(i, nc) = sum(strcmpi(EpochNames, epochtrans2{nc})); 
 
@@ -104,12 +104,6 @@ end
 
 % Now you have GrandAverageEEG with three different versions stored.
 
-%% export trialwise EEG data for behavior - EEG relation analysis
-
-
-
-
-
 %% 2. Plot Grand Average - with both conditions, and trial types shown
 
 % Run for differnt versions
@@ -119,7 +113,7 @@ GrandAverageEEG = load('Z:\EPSY\EPSY-Allgemein\Forschung\Pauls Materialien\proje
 
 GrandAverageEEG = GrandAverageEEG.GrandAverageEEG  
 
-plot (EEG.times, OB_COMMON,'b', EEG.times, OB_RARE, '--b', EEG.times, RL_COMMON, 'r', EEG.times, RL_RARE, '--r')
+plot (EEG.times, OB_COMMON,'b', EEG.times, OB_RARE, '--b', EEG.times, REV_COMMON, 'r', EEG.times, REV_RARE, '--r')
 title(['EEG at ' EEG.chanlocs(elec).labels])
 set(gca, 'YDir')
 legend('OB_common', 'OB_rare', 'RL_common', 'RL_rare')
@@ -256,48 +250,27 @@ sgtitle('Trial type differences')
 
 %% Figures for condition & trial types (4 individual plots)
 
-% Create a figure
 figure;
+subplot(2,2,1)
+elec = EEG.chanlocs(1:61); 
+topoplot(OB_COMMON_TOPO, elec); %oddball common
+cbar('vert', 0,[-1, 1]*max(abs(OB_COMMON_TOPO)));
+title('Oddball Common')
+subplot(2,2,2)
+topoplot(OB_RARE_TOPO, elec); %oddball rare
+cbar('vert', 0,[-1, 1]*max(abs(OB_RARE_TOPO)));
+title('Oddball Rare')
+subplot(2,2,3)
+topoplot(REV_COMMON_TOPO, elec); %reversal common
+cbar('vert', 0,[-1, 1]*max(abs(REV_COMMON_TOPO)));
+title('Reversal Common')
+subplot(2,2,4)
+topoplot(REV_RARE_TOPO, elec); %reversal rare
+cbar('vert', 0,[-1, 1]*max(abs(REV_RARE_TOPO)));
+title('Reversal Rare')
+sgtitle('300-400ms')
 
-% Define the electrodes
-elec = EEG.chanlocs(1:61);
-
-% Define maximum value for color scaling
-max_val = max([abs(OB_COMMON_TOPO(:)); abs(OB_RARE_TOPO(:)); abs(REV_COMMON_TOPO(:)); abs(REV_RARE_TOPO(:))]);
-
-% Subplot 1: Oddball Common
-subplot(2, 2, 1);
-topoplot(OB_COMMON_TOPO, elec);
-title('Oddball Common', 'FontSize', 12);
-cbar_handle1 = colorbar('Position', [0.46, 0.58, 0.02, 0.3], 'Limits', [-1, 1] * max_val);
-ylabel(cbar_handle1, 'µV', 'FontSize', 10);
-
-% Subplot 2: Oddball Rare
-subplot(2, 2, 2);
-topoplot(OB_RARE_TOPO, elec);
-title('Oddball Rare', 'FontSize', 12);
-cbar_handle2 = colorbar('Position', [0.93, 0.58, 0.02, 0.3], 'Limits', [-1, 1] * max_val);
-ylabel(cbar_handle2, 'µV', 'FontSize', 10);
-
-% Subplot 3: Reversal Common
-subplot(2, 2, 3);
-topoplot(REV_COMMON_TOPO, elec);
-title('Reversal Common', 'FontSize', 12);
-cbar_handle3 = colorbar('Position', [0.46, 0.1, 0.02, 0.3], 'Limits', [-1, 1] * max_val);
-ylabel(cbar_handle3, 'µV', 'FontSize', 10);
-
-% Subplot 4: Reversal Rare
-subplot(2, 2, 4);
-topoplot(REV_RARE_TOPO, elec);
-title('Reversal Rare', 'FontSize', 12);
-cbar_handle4 = colorbar('Position', [0.93, 0.1, 0.02, 0.3], 'Limits', [-1, 1] * max_val);
-ylabel(cbar_handle4, 'µV', 'FontSize', 10);
-
-% Adjust overall figure layout
-set(gcf, 'Position', [100, 100, 1000, 800]); % Adjust figure size for better visualization
-
-% Save the figure as a PNG file
-saveas(gcf, 'topoplots_v3.png');
+saveas(gcf, 'topoplots_v3.png'); % Save as PNG file
 
 
 

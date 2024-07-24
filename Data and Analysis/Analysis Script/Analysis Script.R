@@ -199,9 +199,8 @@ abline(model, col = "red")
 print(paste("Correlation coefficient:", round(correlation_RT_OB, 2)))
 
 
-For RL
+#For RL
 
-```{r}
 # Step 2: Calculate the average ACC per subject when trial_number_related_to_surprise is 1
 average_RT_surprise_1_4 <- combined_behav %>%
   filter(part == "changepoint" & trial_number_related_to_surprise == 1) %>%  group_by(id) %>%
@@ -215,9 +214,7 @@ correlation_RT_RL <- cor(merged_averages_RL_RT$avg_value, merged_averages_RL_RT$
 
 # Print the correlation
 print(correlation_RT_RL)
-```
 
-```{r}
 # Fit a linear regression model
 model <- lm(avg_RT ~ avg_value, data = merged_averages_RL_RT)
 
@@ -233,5 +230,5 @@ abline(model, col = "red")
 # Print the correlation coefficient
 print(paste("Correlation coefficient:", round(correlation_RT_RL, 2)))
 
-```
+
 
